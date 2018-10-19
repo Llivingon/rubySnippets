@@ -13,9 +13,9 @@ module Serverspec
           # rubocop:disable LineLength
           # @param instance [Class] Aws::ElasticLoadBalancing::LoadBalancer instance
           # rubocop:enable LineLength
-          # @raise [RuntimeError] if elbs.nil?
-          # @raise [RuntimeError] if elbs.length == 0
-          # @raise [RuntimeError] if elbs.length > 1
+          # @raise [RuntimeError] if albs.nil?
+          # @raise [RuntimeError] if albs.length == 0
+          # @raise [RuntimeError] if albs.length > 1
           def initialize(alb_arn, instance = nil)
             check_init_arg(
               'alb_arn',
@@ -25,6 +25,7 @@ module Serverspec
             @alb_arn = alb_arn
             get_instance instance
             get_alb alb_arn
+            get_alb_target_group alb_arn
           end
 
           # Returns the string representation of
@@ -108,15 +109,30 @@ module Serverspec
             @alb.security_groups
           end
 
+          # Information about the health checks conducted on the load balancer
+          # @return [Hash]
+          def target_health_check
+            @alb_tgs
+          end
+
           private
 
           # @private
           def get_alb(arn)
             albs = @aws.describe_load_balancers(
-              load_balancer_names: [arn]
+              load_balancer_arns: [arn]
             ).load_balancers
             check_length 'load balancers', albs
             @alb = albs[0]
+          end
+
+          # @private
+          def get_alb_target_group(arn)
+            alb_tgs = @aws.describe_target_groups(
+              load_balancer_arn: [arn]
+            ).target_groups
+            check_length 'target groups', alb_tgs
+            @alb_tgs = alb_tgs[0]
           end
 
           # @private
