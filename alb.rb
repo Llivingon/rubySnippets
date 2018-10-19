@@ -56,41 +56,36 @@ module Serverspec
             @alb.canonical_hosted_zone_id
           end
 
-          # The ID of the Amazon Route 53 hosted zone name associated with the
-          # load balancer
+          # The ARN of the load balancer
           # @return [String]
-          def canonical_hosted_zone_name_id
-            @alb.canonical_hosted_zone_name_id
+          def load_balancer_arn
+            @alb.load_balancer_arn
           end
 
-          # The listeners for the load balancer
+          # The type for the load balancer
+          # @return [String]
+          def type
+            @alb.type
+          end
+
+          # The ZoneNames of the Availability Zones for the load balancer
           # @return [Array(Hash)]
-          def listeners
-            @alb.listener_descriptions
-          end
-
-          # The policies defined for the load balancer
-          # @return [Hash]
-          def policies
-            @alb.policies
-          end
-
-          # Information about the back-end servers
-          # @return [Array(Hash)]
-          def backend_server_descriptions
-            @alb.backend_server_descriptions
-          end
-
-          # The Availability Zones for the load balancer
-          # @return [Array(String)]
           def availability_zones
-            @alb.availability_zones
+            zones = []
+            @alb.availability_zones.each do |inst|
+              zones << inst.zone_name
+            end
+            zones
           end
-
-          # The IDs of the subnets for the load balancer
-          # @return [Array(String)]
+          
+          # The Ids of Subnets of the load balancer
+          # @return [Array(Hash)]
           def subnets
-            @alb.subnets
+            subnetIds = []
+            @alb.availability_zones.each do |inst|
+              subnetIds << inst.subnet_id
+            end
+            subnetIds
           end
 
           # The ID of the VPC for the load balancer
@@ -99,30 +94,11 @@ module Serverspec
             @alb.vpc_id
           end
 
-          # The IDs of the instances for the load balancer
-          # @return [Array(Hash)]
-          def instances
-            instances = []
-            @alb.instances.each do |inst|
-              instances << inst.instance_id
-            end
-            instances
-          end
-
-          # Information about the health checks conducted on the load balancer
-          # @return [Hash]
-          def health_check
-            @alb.health_check
-          end
-
-          # The security group that you can use as part of your inbound rules
-          # for your load balancer's back-end application instances. To only
-          # allow traffic from load balancers, add a security group rule to your
-          # back end instance that specifies this source security group as the
-          # inbound source
-          # @return [Hash]
-          def source_security_group
-            @alb.source_security_group
+          # The state for the load balancer 
+          # String, one of "active", "provisioning", "active_impaired", "failed"
+          # @return [String ]
+          def state
+            @alb.state.code
           end
 
           # The security groups for the load balancer. Valid only for load
