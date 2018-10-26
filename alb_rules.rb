@@ -20,9 +20,9 @@ module Serverspec
             check_init_arg(
               'rule_arn',
               'ElasticLoadBalancingV2::LoadBalancerRule',
-              alb_arn
+              rule_arn
             )
-            @alb_arn = alb_arn
+            @rule_arn = rule_arna
             get_instance instance
             get_rule rule_arn
           end
@@ -47,7 +47,7 @@ module Serverspec
           
           # Information about the target group arn on the rule
           # @return [String]
-          def targetgroup_arn
+          def target_group_arn
             @rule_details.actions[0].target_group_arn
           end          
           
