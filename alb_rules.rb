@@ -68,7 +68,7 @@ module Serverspec
           # @private
           def get_rule(rule_arn)
             rule_details = @aws.describe_rules(
-              listener_arn: [rule_arn]
+              rule_arns: [rule_arn]
             ).rules
             check_length 'rule details', rule_details
             @rule_details = rule_details[0]
