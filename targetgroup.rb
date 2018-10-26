@@ -8,8 +8,8 @@ module Serverspec
         # resources
         class LoadBalancerRule < Base
           # AWS SDK for Ruby v2 Aws::ElasticLoadBalancing::LoadBalancerRule wrapper
-          # for initializing a LoadBalancerRules resource
-          # @param alb_name [String] The name of the LoadBalancer
+          # for initializing a LoadBalancerRule resource
+          # @param alb_name [String] The arn of the Rule
           # rubocop:disable LineLength
           # @param instance [Class] Aws::ElasticLoadBalancing::LoadBalancerRule instance
           # rubocop:enable LineLength
@@ -27,11 +27,40 @@ module Serverspec
             get_rule rule_arn
           end
 
-                    
-          # Information about the health checks conducted on the load balancer
-          # @return [Hash]
-          def target_health_check
-            @rule_details
+          # Indicates whether rule is_default
+          # @return [Boolean]
+          def is_default
+            @rule_details.is_default == true
+          end
+          
+          # Information about the priority on the rule
+          # @return [String]
+          def priority
+            @rule_details.priority
+          end
+          
+          # Information about the action type on the rule
+          # @return [String]
+          def action_type
+            @rule_details.actions[0].type
+          end          
+          
+          # Information about the target group arn on the rule
+          # @return [String]
+          def targetgroup_arn
+            @rule_details.actions[0].target_group_arn
+          end          
+          
+          # Information about the conditions on the rule
+          # @return [String]
+          def condition_field
+            @rule_details.conditions[0].field
+          end
+          
+          # Information about the condition values on the rule
+          # @return [Array]
+          def condition_values
+            @rule_details.conditions[0].values
           end
           
           private
