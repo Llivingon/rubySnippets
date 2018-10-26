@@ -29,7 +29,7 @@ module Serverspec
 
           # Indicates whether rule is_default
           # @return [Boolean]
-          def is_default
+          def is_default?
             @rule_details.is_default == true
           end
           
